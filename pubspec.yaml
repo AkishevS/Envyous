@@ -1,0 +1,27 @@
+name: envyous_flutter_web
+description: A new Flutter project.
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_screenutil: ^5.9.0
+  go_router: ^13.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/bg_purple.png
+    - assets/envyous_logo.png
+    - assets/envyous_logo_clean.png
+    - assets/mates.png
+    - assets/bonuses.png
+    - assets/home.png
+    - assets/tasks.png
+    - assets/wallet.png
+    - assets/envyous_coin.png
+    - assets/envyous_black_coin.png
+    - assets/top.png
