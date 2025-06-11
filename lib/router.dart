@@ -52,7 +52,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/bonuses',
       name: 'bonuses',
-      pageBuilder: (_, __) => NoTransitionPage(child: const BonusesScreen()),
+      pageBuilder: (_, __) => NoTransitionPage(child: const LeaderboardScreen()),
     ),
     GoRoute(
       path: '/transfers',

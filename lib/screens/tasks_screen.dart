@@ -178,7 +178,7 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
                                     ),
                                   ),
                                   SizedBox(height: 6.h),
-                                  Image.asset('assets/envyous_black_coin.png', width: 28.w),
+                                  Image.asset('assets/envyous_logo_clean.png', width: 28.w),
                                   SizedBox(height: 6.h),
                                   Text(
                                     isCollected
@@ -262,7 +262,7 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
       ),
       child: Row(
         children: [
-          Image.asset('assets/envyous_black_coin.png', width: 32.w),
+          Image.asset('assets/envyous_logo.png', width: 32.w),
           SizedBox(width: 12.w),
           Expanded(
             child: Column(
@@ -272,14 +272,14 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
                   title,
                   style: TextStyle(
                     fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     color: Colors.white,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Row(
                   children: [
-                    Image.asset('assets/envyous_coin.png', width: 14.w),
+                    Image.asset('assets/coin.png', width: 14.w),
                     SizedBox(width: 4.w),
                     Text(
                       '+ ${reward.toString().replaceAllMapped(RegExp(r"(\d)(?=(\d{3})+(?!\d))"), (m) => "${m[1]} ")} ',

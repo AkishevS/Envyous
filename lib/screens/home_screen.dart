@@ -62,6 +62,25 @@ class _HomeScreenState extends State<HomeScreen>
     await Future.delayed(const Duration(milliseconds: 600));
     if (mounted) setState(() => showPlusOne = false);
   }
+  void showComingSoonDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: MColors.card,
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        content: Text(
+          'Coming soon',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen>
             child: BalanceBlock(
               balance: balance,
               dollarBalance: 8.05,
-              onBalanceTap: () => context.go('/wallet'),
-              onTransferTap: () => context.go('/transfers'),
+              onBalanceTap: () =>  showComingSoonDialog(),
+              onTransferTap: () => showComingSoonDialog()
             ),
           ),
           Positioned(
