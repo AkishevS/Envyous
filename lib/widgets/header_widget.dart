@@ -5,12 +5,14 @@ class HeaderWidget extends StatelessWidget {
   final String username;
   final bool verified;
   final VoidCallback onSettingsTap;
+  final VoidCallback onProfileTap;
   final VoidCallback onHelpTap;
 
   const HeaderWidget({
     super.key,
     required this.username,
     required this.verified,
+    required this.onProfileTap,
     required this.onSettingsTap,
     required this.onHelpTap,
   });
@@ -25,8 +27,10 @@ class HeaderWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              children: [
+          GestureDetector(
+          onTap: onProfileTap,
+          child: Row(
+            children: [
                 CircleAvatar(
                   radius: 16.r,
                   backgroundImage: AssetImage('assets/envyous_logo.png'),
@@ -54,6 +58,7 @@ class HeaderWidget extends StatelessWidget {
                 ),
               ],
             ),
+          ),
 
             // Правая часть: настройки и помощь
             Container(

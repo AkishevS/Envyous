@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../styles/colors.dart';
 import '../styles/text_styles.dart';
 
-
 class ProfileSheet extends StatefulWidget {
   const ProfileSheet({super.key});
 
@@ -28,7 +27,7 @@ class _ProfileSheetState extends State<ProfileSheet> {
   ];
 
   String _selected = _avatars.first;
-  final int _position = 7;
+  final int _position = 7; // placeholder leaderboard position
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,7 @@ class _ProfileSheetState extends State<ProfileSheet> {
               radius: 36.r,
             ),
             SizedBox(height: 12.h),
-            Text('You are #\$_position in the leaderboard',
+            Text('You are #$_position in the leaderboard',
                 style: MTextStyles.main),
             SizedBox(height: 16.h),
             Align(
@@ -106,6 +105,99 @@ void showProfileSheet(BuildContext context) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const ProfileSheet(),
+    builder: (_) => FractionallySizedBox(
+      heightFactor: 0.9,
+      child: const ProfileSheet(),
+    ),
+  );
+}
+
+class SettingsSheet extends StatelessWidget {
+  const SettingsSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, bottomPadding + 16.h),
+      decoration: BoxDecoration(
+        color: MColors.card,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40.w,
+            height: 4.h,
+            margin: EdgeInsets.only(bottom: 12.h),
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(2.r),
+            ),
+          ),
+          Text('Settings', style: MTextStyles.main),
+          SizedBox(height: 12.h),
+          Text('Coming soon', style: MTextStyles.secondary),
+        ],
+      ),
+    );
+  }
+}
+
+void showSettingsSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => FractionallySizedBox(
+      heightFactor: 0.8,
+      child: const SettingsSheet(),
+    ),
+  );
+}
+
+class HelpSheet extends StatelessWidget {
+  const HelpSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, bottomPadding + 16.h),
+      decoration: BoxDecoration(
+        color: MColors.card,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40.w,
+            height: 4.h,
+            margin: EdgeInsets.only(bottom: 12.h),
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(2.r),
+            ),
+          ),
+          Text('Help', style: MTextStyles.main),
+          SizedBox(height: 12.h),
+          Text('Coming soon', style: MTextStyles.secondary),
+        ],
+      ),
+    );
+  }
+}
+
+void showHelpSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => FractionallySizedBox(
+      heightFactor: 0.8,
+      child: const HelpSheet(),
+    ),
   );
 }

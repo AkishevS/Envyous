@@ -25,11 +25,6 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (_, __) => NoTransitionPage(child: const HomeScreen()),
     ),
     GoRoute(
-      path: '/profile',
-      name: 'profile',
-      pageBuilder: (_, __) => NoTransitionPage(child: const ProfileScreen()),
-    ),
-    GoRoute(
       path: '/leaderboard',
       name: 'leaderboard',
       pageBuilder: (_, __) => NoTransitionPage(child: const LeaderboardScreen()),

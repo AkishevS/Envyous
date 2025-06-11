@@ -7,6 +7,8 @@ import '../widgets/balance_info_bar.dart';
 import '../widgets/farming_bar.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
+import 'profile_screen.dart' hide showProfileSheet;
+import '../widgets/modals.dart';
 
 int getCurrentNavBarIndex(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
@@ -109,8 +111,9 @@ class _HomeScreenState extends State<HomeScreen>
             child: HeaderWidget(
               verified: true,
               username: 'Akishev',
-              onSettingsTap: () {},
-              onHelpTap: () {},
+              onProfileTap: () => showProfileSheet(context),
+              onSettingsTap: () => showSettingsSheet(context),
+              onHelpTap: () => showHelpSheet(context),
             ),
           ),
           Positioned(

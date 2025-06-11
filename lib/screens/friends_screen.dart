@@ -1,3 +1,4 @@
+import 'package:envyous_flutter_web/screens/profile_screen.dart' hide showProfileSheet;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,8 @@ import '../styles/colors.dart';
 import '../styles/text_styles.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
+import '../widgets/modals.dart';
+
 
 int getCurrentNavBarIndex(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
@@ -32,8 +35,9 @@ class FriendsScreen extends StatelessWidget {
               child: HeaderWidget(
                 verified: true,
                 username: 'Akishev',
-                onSettingsTap: () {},
-                onHelpTap: () {},
+                onProfileTap: () => showProfileSheet(context),
+                onSettingsTap: () => showSettingsSheet(context),
+                onHelpTap: () => showHelpSheet(context),
               ),
             ),
             SizedBox(height: 24.h),

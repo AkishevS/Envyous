@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../styles/colors.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
+import '../widgets/modals.dart';
 
 
 int getCurrentNavBarIndex(BuildContext context) {
@@ -68,8 +69,9 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
               child: HeaderWidget(
                 verified: true,
                 username: 'Akishev',
-                onSettingsTap: () {},
-                onHelpTap: () {},
+                onProfileTap: () => showProfileSheet(context),
+                onSettingsTap: () => showSettingsSheet(context),
+                onHelpTap: () => showHelpSheet(context),
               ),
             ),
             SizedBox(height: 45.h),

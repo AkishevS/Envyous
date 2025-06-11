@@ -5,6 +5,7 @@ import '../styles/colors.dart';
 import '../styles/text_styles.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
+import '../widgets/modals.dart';
 
 class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
@@ -47,8 +48,9 @@ class LeaderboardScreen extends StatelessWidget {
                   HeaderWidget(
                     verified: true,
                     username: 'Akishev',
-                    onSettingsTap: () {},
-                    onHelpTap: () {},
+                    onProfileTap: () => showProfileSheet(context),
+                    onSettingsTap: () => showSettingsSheet(context),
+                    onHelpTap: () => showHelpSheet(context),
                   ),
                   SizedBox(height: 24.h),
                   Text(
