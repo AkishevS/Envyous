@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../controllers/user_controller.dart';
 import '../styles/colors.dart';
 import '../widgets/balance_info_bar.dart';
 import '../widgets/farming_bar.dart';
@@ -110,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen>
             right: 16.w,
             child: HeaderWidget(
               verified: true,
-              username: 'Akishev',
+              username: UserController.instance.username,
               onProfileTap: () => showProfileSheet(context),
               onSettingsTap: () => showSettingsSheet(context),
               onHelpTap: () => showHelpSheet(context),

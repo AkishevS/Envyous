@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../controllers/user_controller.dart';
 import '../styles/colors.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
@@ -68,7 +69,7 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
               right: 16.w,
               child: HeaderWidget(
                 verified: true,
-                username: 'Akishev',
+                username: UserController.instance.username,
                 onProfileTap: () => showProfileSheet(context),
                 onSettingsTap: () => showSettingsSheet(context),
                 onHelpTap: () => showHelpSheet(context),

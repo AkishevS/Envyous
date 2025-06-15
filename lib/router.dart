@@ -4,10 +4,8 @@ import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/leaderboard_screen.dart';
-import 'screens/tokens_screen.dart';
 import 'screens/wallet_screen.dart';
 import 'screens/tasks_screen.dart';
-import 'screens/bonuses_screen.dart';
 import 'screens/transfers_screen.dart';
 import 'screens/friends_screen.dart';
 
@@ -23,16 +21,6 @@ final GoRouter appRouter = GoRouter(
       path: '/home',
       name: 'home',
       pageBuilder: (_, __) => NoTransitionPage(child: const HomeScreen()),
-    ),
-    GoRoute(
-      path: '/leaderboard',
-      name: 'leaderboard',
-      pageBuilder: (_, __) => NoTransitionPage(child: const LeaderboardScreen()),
-    ),
-    GoRoute(
-      path: '/tokens',
-      name: 'tokens',
-      pageBuilder: (_, __) => NoTransitionPage(child: const TokensScreen()),
     ),
     GoRoute(
       path: '/wallet',
