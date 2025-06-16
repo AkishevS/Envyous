@@ -1,14 +1,15 @@
-import 'dart:async';
+// lib/screens/tasks_screen.dart
+import 'dart:js' as js;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
-import '../controllers/user_controller.dart';
+import 'package:http/http.dart' as http;
 import '../styles/colors.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
 import '../widgets/modals.dart';
-
+import '../controllers/user_controller.dart';
 
 int getCurrentNavBarIndex(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
@@ -17,40 +18,40 @@ int getCurrentNavBarIndex(BuildContext context) {
   return idx != -1 ? idx : 2;
 }
 
-class DailyRewardsScreen extends StatefulWidget {
-  const DailyRewardsScreen({super.key});
+class TasksScreen extends StatefulWidget {
+  const TasksScreen({super.key});
 
   @override
-  State<DailyRewardsScreen> createState() => _DailyRewardsScreenState();
+  State<TasksScreen> createState() => _TasksScreenState();
 }
 
-class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
-  final int currentDay = 1;
-  late Timer timer;
-  Duration remaining = const Duration(hours: 4, minutes: 55, seconds: 47);
+class _TasksScreenState extends State<TasksScreen> {
   bool showDaily = false;
+  List<dynamic> generalTasks = [];
+  bool loading = true;
 
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 1), (_) {
+    _fetchGeneralTasks();
+  }
+
+  Future<void> _fetchGeneralTasks() async {
+    final res = await http.get(
+      Uri.parse('http://localhost:8080/tasks/general'),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'test',
+      },
+    );
+    if (res.statusCode == 200) {
       setState(() {
-        if (remaining.inSeconds > 0) {
-          remaining = remaining - const Duration(seconds: 1);
-        }
+        generalTasks = jsonDecode(res.body);
+        loading = false;
       });
-    });
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
-
-  String formatDuration(Duration d) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    return "${twoDigits(d.inHours)}:${twoDigits(d.inMinutes % 60)}:${twoDigits(d.inSeconds % 60)}";
+    } else {
+      setState(() => loading = false);
+    }
   }
 
   @override
@@ -63,17 +64,12 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 40.h),
-            Positioned(
-              top: 40.h,
-              left: 16.w,
-              right: 16.w,
-              child: HeaderWidget(
-                verified: true,
-                username: UserController.instance.username,
-                onProfileTap: () => showProfileSheet(context),
-                onSettingsTap: () => showSettingsSheet(context),
-                onHelpTap: () => showHelpSheet(context),
-              ),
+            HeaderWidget(
+              verified: true,
+              username: UserController.instance.username,
+              onProfileTap: () => showProfileSheet(context),
+              onSettingsTap: () => showSettingsSheet(context),
+              onHelpTap: () => showHelpSheet(context),
             ),
             SizedBox(height: 45.h),
             Row(
@@ -129,129 +125,93 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
               ],
             ),
             SizedBox(height: 24.h),
-            if (showDaily)
-              Expanded(
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        'Заходи каждый день и забирай бонус!',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16.h),
-                    Expanded(
-                      child: GridView.builder(
-                        itemCount: 31,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 10.w,
-                          mainAxisSpacing: 10.h,
-                          childAspectRatio: 0.85,
-                        ),
-                        itemBuilder: (context, index) {
-                          int day = index + 1;
-                          bool isCollected = day < currentDay;
-                          bool isToday = day == currentDay;
-
-                          return GestureDetector(
-                            onTap: isToday ? () {} : null,
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
-                                borderRadius: BorderRadius.circular(12.r),
-                                border: isToday
-                                    ? Border.all(color: Colors.blueAccent, width: 1.6)
-                                    : null,
-                              ),
-                              padding: EdgeInsets.all(8.w),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'День $day',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  SizedBox(height: 6.h),
-                                  Image.asset('assets/envyous_logo_clean.png', width: 28.w),
-                                  SizedBox(height: 6.h),
-                                  Text(
-                                    isCollected
-                                        ? 'Собрано'
-                                        : '+ ${(day * 1000).toString()}🪙',
-                                    style: TextStyle(
-                                      color: isCollected
-                                          ? Colors.white.withOpacity(0.5)
-                                          : MColors.primary,
-                                      fontSize: 12.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 16.h),
-                    Center(
-                      child: Text(
-                        formatDuration(remaining),
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                  ],
-                ),
-              )
-            else
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 4.w, bottom: 12.h),
-                      child: Text(
-                        'Социальные сети',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView(
-                        children: [
-                          _taskItem('Подпишись на 1win в Telegram', 19306800),
-                          _taskItem('Приручи Мухтара', 25742500),
-                          _taskItem('Поставь лайк и сделай ретвит в X', 12871200),
-                          _taskItem('Сделай репост Reels в историю Instagram', 12871200),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )
+            Expanded(
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : showDaily
+                  ? _buildDailyTasks()
+                  : _buildGeneralTasks(),
+            )
           ],
         ),
       ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: getCurrentNavBarIndex(context),
       ),
+    );
+  }
+
+  Widget _buildGeneralTasks() {
+    return ListView.builder(
+      itemCount: generalTasks.length,
+      itemBuilder: (context, index) {
+        final task = generalTasks[index];
+        return _taskItem(
+          task['name'] as String,
+          task['reward'] as int,
+        );
+      },
+    );
+  }
+
+  Widget _buildDailyTasks() {
+    final now = DateTime.now();
+    final currentDay = now.day;
+
+    return Column(
+      children: [
+        Text(
+          'Заходи каждый день и забирай бонус!',
+          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 14.sp),
+        ),
+        SizedBox(height: 16.h),
+        Expanded(
+          child: GridView.builder(
+            itemCount: 31,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 10.w,
+              mainAxisSpacing: 10.h,
+              childAspectRatio: 0.85,
+            ),
+            itemBuilder: (context, index) {
+              int day = index + 1;
+              bool isCollected = day < currentDay;
+              bool isToday = day == currentDay;
+
+              return GestureDetector(
+                onTap: isToday ? () {} : null,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: isToday ? Border.all(color: Colors.blueAccent, width: 1.6) : null,
+                  ),
+                  padding: EdgeInsets.all(8.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('День $day', style: TextStyle(color: Colors.white, fontSize: 12.sp)),
+                      SizedBox(height: 6.h),
+                      Image.asset('assets/envyous_logo_clean.png', width: 28.w),
+                      SizedBox(height: 6.h),
+                      Text(
+                        isCollected ? 'Собрано' : '+ ${(day * 1000)} 🪙',
+                        style: TextStyle(
+                          color: isCollected ? Colors.white.withOpacity(0.5) : MColors.primary,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        )
+      ],
     );
   }
 
@@ -273,11 +233,7 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.white),
                 ),
                 SizedBox(height: 4.h),
                 Row(
@@ -285,11 +241,8 @@ class _DailyRewardsScreenState extends State<DailyRewardsScreen> {
                     Image.asset('assets/coin.png', width: 14.w),
                     SizedBox(width: 4.w),
                     Text(
-                      '+ ${reward.toString().replaceAllMapped(RegExp(r"(\d)(?=(\d{3})+(?!\d))"), (m) => "${m[1]} ")} ',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: Colors.purpleAccent,
-                      ),
+                      '+ ${reward.toString().replaceAllMapped(RegExp(r"(\d)(?=(\d{3})+(?!\d))"), (m) => "\${m[1]} ")} ',
+                      style: TextStyle(fontSize: 13.sp, color: Colors.purpleAccent),
                     ),
                   ],
                 )

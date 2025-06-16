@@ -30,7 +30,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/tasks',
       name: 'tasks',
-      pageBuilder: (_, __) => NoTransitionPage(child: const DailyRewardsScreen()),
+      pageBuilder: (_, __) => NoTransitionPage(child: const TasksScreen()),
     ),
     GoRoute(
       path: '/bonuses',

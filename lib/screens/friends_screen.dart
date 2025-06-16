@@ -1,14 +1,15 @@
-import 'package:envyous_flutter_web/screens/profile_screen.dart' hide showProfileSheet;
+import 'dart:js' as js;
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../controllers/user_controller.dart';
+import '../services/api_service.dart';
 import '../styles/colors.dart';
 import '../styles/text_styles.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/header_widget.dart';
 import '../widgets/modals.dart';
-
 
 int getCurrentNavBarIndex(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
@@ -17,8 +18,37 @@ int getCurrentNavBarIndex(BuildContext context) {
   return idx != -1 ? idx : 2;
 }
 
-class FriendsScreen extends StatelessWidget {
+class FriendsScreen extends StatefulWidget {
   const FriendsScreen({super.key});
+
+  @override
+  State<FriendsScreen> createState() => _FriendsScreenState();
+}
+
+class _FriendsScreenState extends State<FriendsScreen> {
+  List<dynamic> _referrals = [];
+  bool _loading = true;
+
+  String? getInitData() {
+    return js.context['Telegram']?['WebApp']?['initData'] as String?;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final initData = getInitData();
+    if (initData == null) return;
+
+    final data = await ApiService.fetchReferrals(initData);
+    setState(() {
+      _referrals = data;
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,30 +59,23 @@ class FriendsScreen extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           children: [
             SizedBox(height: 40.h),
-            Positioned(
-              top: 40.h,
-              left: 16.w,
-              right: 16.w,
-              child: HeaderWidget(
-                verified: true,
-                username: UserController.instance.username,
-                onProfileTap: () => showProfileSheet(context),
-                onSettingsTap: () => showSettingsSheet(context),
-                onHelpTap: () => showHelpSheet(context),
-              ),
+            HeaderWidget(
+              verified: true,
+              username: UserController.instance.username,
+              onProfileTap: () => showProfileSheet(context),
+              onSettingsTap: () => showSettingsSheet(context),
+              onHelpTap: () => showHelpSheet(context),
             ),
-            SizedBox(height: 24.h),
-            Center(),
             SizedBox(height: 24.h),
             Center(
               child: Column(
                 children: [
                   Text(
-                    '+0',
+                    '+10% от их заработка',
                     style: TextStyle(color: Colors.white70, fontSize: 12.sp),
                   ),
                   Text(
-                    '14',
+                    '${_referrals.length}',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 34.sp,
@@ -67,7 +90,7 @@ class FriendsScreen extends StatelessWidget {
                   Text(
                     'Посмотреть правила реферальной программы >',
                     style:
-                        TextStyle(color: Colors.purpleAccent, fontSize: 12.sp),
+                    TextStyle(color: Colors.purpleAccent, fontSize: 12.sp),
                   ),
                 ],
               ),
@@ -81,11 +104,22 @@ class FriendsScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FriendTile(rank: 1, username: '@_@', date: '2024.10.20'),
-                  SizedBox(height: 12.h),
-                  FriendTile(rank: 2, username: 'Arsyk', date: '2024.10.09'),
-                ],
+                children: _loading
+                    ? [
+                  const Center(child: CircularProgressIndicator()),
+                ]
+                    : _referrals.map((ref) {
+                  return Column(
+                    children: [
+                      FriendTile(
+                        rank: 0,
+                        username: 'ID ${ref['telegram_id']}',
+                        date: ref['registered_at']?.toString() ?? '',
+                      ),
+                      SizedBox(height: 12.h),
+                    ],
+                  );
+                }).toList(),
               ),
             ),
             SizedBox(height: 20.h),
@@ -98,7 +132,16 @@ class FriendsScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12.h),
               ),
               onPressed: () {
-                // действие на "пригласить"
+                final userId = js.context['Telegram']?['WebApp']?['initDataUnsafe']?['user']?['id'];
+                if (userId != null) {
+                  final link = 'https://t.me/YourBot/yourApp?startapp=$userId';
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      content: Text('Скопируй и отправь другу: $link'),
+                    ),
+                  );
+                }
               },
               child: Text(
                 'Пригласить друга',
@@ -152,7 +195,7 @@ class FriendTile extends StatelessWidget {
             ],
           ),
         ),
-        Text('+0 🟡', style: TextStyle(color: Colors.white, fontSize: 14.sp)),
+        Text('+10% 🟡', style: TextStyle(color: Colors.white, fontSize: 14.sp)),
       ],
     );
   }

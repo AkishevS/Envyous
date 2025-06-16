@@ -3,19 +3,17 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String baseUrl = 'http://localhost:8080';
-  static const String apiKey = 'test';
 
-  static Map<String, String> get _headers => {
+
+  static Map<String, String> headers(String initData) => {
     'Content-Type': 'application/json',
-    'X-API-Key': apiKey,
+    'Authorization': 'tma $initData',
   };
 
-  static Future<Map<String, dynamic>?> login(
-      String username, String password) async {
-    final res = await http.post(
-      Uri.parse('$baseUrl/login'),
-      headers: _headers,
-      body: jsonEncode({'username': username, 'password': password}),
+  static Future<Map<String, dynamic>?> fetchProfile(String initData) async {
+    final res = await http.get(
+      Uri.parse('$baseUrl/profile'),
+      headers: headers(initData),
     );
     if (res.statusCode == 200) {
       return jsonDecode(res.body) as Map<String, dynamic>;
@@ -23,10 +21,10 @@ class ApiService {
     return null;
   }
 
-  static Future<List<dynamic>> fetchLeaderboard([int limit = 10]) async {
+  static Future<List<dynamic>> fetchLeaderboard(String initData, [int limit = 10]) async {
     final res = await http.get(
       Uri.parse('$baseUrl/leaderboard?limit=$limit'),
-      headers: _headers,
+      headers: headers(initData),
     );
     if (res.statusCode == 200) {
       return jsonDecode(res.body) as List<dynamic>;
@@ -34,14 +32,27 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>?> fetchProfile(String chatId) async {
+
+  static Future<List<dynamic>> fetchReferrals(String initData) async {
     final res = await http.get(
-      Uri.parse('$baseUrl/profile/$chatId'),
-      headers: _headers,
+      Uri.parse('$baseUrl/referrals'),
+      headers: headers(initData),
     );
     if (res.statusCode == 200) {
-      return jsonDecode(res.body) as Map<String, dynamic>;
+      return jsonDecode(res.body) as List<dynamic>;
     }
-    return null;
+    return [];
+  }
+
+
+  static Future<List<dynamic>> fetchDailyTasks(String initData) async {
+    final res = await http.get(
+      Uri.parse('$baseUrl/tasks/daily'),
+      headers: headers(initData),
+    );
+    if (res.statusCode == 200) {
+      return jsonDecode(res.body) as List<dynamic>;
+    }
+    return [];
   }
 }
