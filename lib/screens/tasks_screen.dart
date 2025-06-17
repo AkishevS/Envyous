@@ -1,5 +1,3 @@
-// lib/screens/tasks_screen.dart
-import 'dart:js' as js;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import '../styles/colors.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../services/api_service.dart';
 import '../widgets/header_widget.dart';
 import '../widgets/modals.dart';
 import '../controllers/user_controller.dart';
@@ -38,10 +37,10 @@ class _TasksScreenState extends State<TasksScreen> {
 
   Future<void> _fetchGeneralTasks() async {
     final res = await http.get(
-      Uri.parse('http://localhost:8080/tasks/general'),
+      Uri.parse('${ApiService.baseUrl}/tasks/general'),
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'test',
+        'X-API-Key': ApiService.apiKey,
       },
     );
     if (res.statusCode == 200) {

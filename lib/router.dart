@@ -10,7 +10,7 @@ import 'screens/transfers_screen.dart';
 import 'screens/friends_screen.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/auth',
   routes: [
     GoRoute(
       path: '/auth',

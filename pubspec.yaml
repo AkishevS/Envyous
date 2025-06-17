@@ -10,7 +10,8 @@ dependencies:
     sdk: flutter
   flutter_screenutil: ^5.9.0
   go_router: ^13.0.1
-  http: any
+  http: 1.4.0
+  telegram_web_app:
   js: ^0.6.7
 
 
