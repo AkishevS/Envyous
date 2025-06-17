@@ -1,69 +1,80 @@
-import 'dart:convert';
-import 'dart:js' as js;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../styles/colors.dart';
 import '../styles/text_styles.dart';
 import '../widgets/bottom_nav_bar.dart';
-import '../services/api_service.dart';
 
-class LeaderboardScreen extends StatefulWidget {
+class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
 
   @override
-  State<LeaderboardScreen> createState() => _LeaderboardScreenState();
-}
-
-class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  List<dynamic> _users = [];
-  bool _loading = true;
-
-  String? getInitData() {
-    return js.context['Telegram']?['WebApp']?['initData'] as String?;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  Future<void> _load() async {
-    final initData = getInitData();
-    if (initData == null) return;
-
-    final data = await ApiService.fetchLeaderboard(initData);
-    setState(() {
-      _users = data;
-      _loading = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final players = [
+      {'name': 'Akishev', 'score': 1280},
+      {'name': 'RedFox', 'score': 1150},
+      {'name': 'PlayerTwo', 'score': 980},
+    ];
+
     return Scaffold(
       backgroundColor: MColors.background,
       body: SafeArea(
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-          itemCount: _users.length,
-          itemBuilder: (context, index) {
-            final u = _users[index];
-            return ListTile(
-              title: Text(
-                'ID: ${u['telegram_id']}',
-                style: MTextStyles.main,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Таблица лидеров',
+                style: MTextStyles.primary.copyWith(
+                  fontSize: 30.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              trailing: Text(
-                '${u['invites_count']} 👥',
-                style: MTextStyles.primary,
+              SizedBox(height: 24.h),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: players.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                  itemBuilder: (context, index) {
+                    final player = players[index];
+                    return Container(
+                      padding: EdgeInsets.all(14.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            '#${index + 1}',
+                            style: MTextStyles.primary.copyWith(fontSize: 18.sp),
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              'name',
+                              style: MTextStyles.primary.copyWith(fontSize: 18.sp),
+                            ),
+                          ),
+                          Text(
+                            '${player['score']} E',
+                            style: MTextStyles.primary.copyWith(
+                              fontSize: 18.sp,
+                              color: MColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 0),
+      bottomNavigationBar: BottomNavBar(currentIndex: 2),
     );
   }
 }

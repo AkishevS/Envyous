@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen>
               balance: balance,
               dollarBalance: 8.05,
               onBalanceTap: () =>  showComingSoonDialog(),
-              onTransferTap: () => showComingSoonDialog()
+              onTransferTap: () => context.go('/transfers'),
             ),
           ),
           Positioned(
